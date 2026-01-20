@@ -1,5 +1,5 @@
 
-const BUSINESS_PHONE = "34678393900";
+const BUSINESS_PHONE = "34605980275";
 const cartItemsEl = document.getElementById('cartItems');
 const totalPriceEl = document.getElementById('totalPrice');
 const clientNameInput = document.getElementById('clientName');
