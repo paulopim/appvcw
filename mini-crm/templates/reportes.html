@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Reportes y Análisis</h2>
+    <p>Selecciona el tipo de reporte que deseas visualizar:</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>🏢 Ventas por Centro</h3>
+        <p>Análisis de ventas agrupadas por centro de trabajo.</p>
+        <a href="{{ url_for('reporte_ventas_centro') }}" class="btn">Ver Reporte</a>
+    </div>
+
+    <div class="card">
+        <h3>👥 Ventas por Cliente</h3>
+        <p>Ranking de clientes por volumen de compras.</p>
+        <a href="{{ url_for('reporte_ventas_cliente') }}" class="btn">Ver Reporte</a>
+    </div>
+
+    <div class="card">
+        <h3>🔧 Servicios Más Vendidos</h3>
+        <p>Análisis de popularidad y ventas por servicio.</p>
+        <a href="{{ url_for('reporte_servicios') }}" class="btn">Ver Reporte</a>
+    </div>
+
+    <div class="card">
+        <h3>⭐ Top Clientes Fidelidad</h3>
+        <p>Clientes con mayor puntuación de fidelidad.</p>
+        <a href="{{ url_for('reporte_top_fidelidad') }}" class="btn">Ver Reporte</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte: Top Clientes Fidelidad{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Top 50 Clientes por Puntos de Fidelidad</h2>
+    <a href="{{ url_for('reportes') }}" class="btn btn-secondary">← Volver a Reportes</a>
+</div>
+
+{% if reporte %}
+<table>
+    <thead>
+        <tr>
+            <th>Posición</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Puntos</th>
+            <th>Total Compras</th>
+            <th>Total Gastado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in reporte %}
+        <tr>
+            <td>
+                {% if loop.index == 1 %}🥇
+                {% elif loop.index == 2 %}🥈
+                {% elif loop.index == 3 %}🥉
+                {% else %}{{ loop.index }}
+                {% endif %}
+            </td>
+            <td>{{ row.nombre }}</td>
+            <td>{{ row.telefono or '-' }}</td>
+            <td>{{ row.email or '-' }}</td>
+            <td><strong>{{ "%.1f"|format(row.puntuacion) }}</strong> pts</td>
+            <td>{{ row.total_compras or 0 }}</td>
+            <td>{{ "%.2f"|format(row.total_gastado or 0) }} €</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay datos disponibles.</p>
+</div>
+{% endif %}
+{% endblock %}

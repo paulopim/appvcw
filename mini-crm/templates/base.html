@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mini CRM - VIP Car Wash{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 Mini CRM - VIP Car Wash</h1>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="{{ url_for('index') }}">🏠 Inicio</a></li>
+                <li><a href="{{ url_for('ventas') }}">💰 Ventas</a></li>
+                <li><a href="{{ url_for('clientes') }}">👥 Clientes</a></li>
+                <li><a href="{{ url_for('servicios') }}">🔧 Servicios</a></li>
+                <li><a href="{{ url_for('centros') }}">🏢 Centros</a></li>
+                <li><a href="{{ url_for('fidelidad') }}">⭐ Fidelidad</a></li>
+                <li><a href="{{ url_for('reportes') }}">📊 Reportes</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

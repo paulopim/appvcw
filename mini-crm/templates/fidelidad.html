@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Tarjetas de Fidelidad - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>⭐ Tarjetas de Fidelidad</h2>
+    <p>Los clientes ganan 1 punto por cada 10€ gastados.</p>
+</div>
+
+{% if tarjetas %}
+<table>
+    <thead>
+        <tr>
+            <th>Posición</th>
+            <th>ID Cliente</th>
+            <th>Nombre</th>
+            <th>Puntuación</th>
+            <th>Última Actualización</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarjeta in tarjetas %}
+        <tr>
+            <td>
+                {% if loop.index == 1 %}🥇
+                {% elif loop.index == 2 %}🥈
+                {% elif loop.index == 3 %}🥉
+                {% else %}{{ loop.index }}
+                {% endif %}
+            </td>
+            <td>{{ tarjeta.id_cliente }}</td>
+            <td>{{ tarjeta.nombre }}</td>
+            <td><strong>{{ "%.1f"|format(tarjeta.puntuacion) }}</strong> puntos</td>
+            <td>{{ tarjeta.fecha_actualizacion[:19] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay tarjetas de fidelidad registradas.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Bienvenido al Mini CRM de VIP Car Wash</h2>
+    <p>Sistema de gestión de relaciones con clientes, ventas y programa de fidelidad.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>💰 Ventas</h3>
+        <p>Registra nuevas ventas, gestiona servicios contratados y genera facturas automáticas.</p>
+        <a href="{{ url_for('nueva_venta') }}" class="btn">Nueva Venta</a>
+        <a href="{{ url_for('ventas') }}" class="btn btn-secondary">Ver Todas</a>
+    </div>
+
+    <div class="card">
+        <h3>👥 Clientes</h3>
+        <p>Gestiona tu base de clientes, sincroniza con Google Contacts automáticamente.</p>
+        <a href="{{ url_for('clientes') }}" class="btn">Ver Clientes</a>
+        <button onclick="syncGoogleContacts()" class="btn btn-secondary">Sincronizar Google</button>
+    </div>
+
+    <div class="card">
+        <h3>🔧 Servicios</h3>
+        <p>Administra el catálogo de servicios disponibles y sus precios.</p>
+        <a href="{{ url_for('servicios') }}" class="btn">Ver Servicios</a>
+        <a href="{{ url_for('nuevo_servicio') }}" class="btn btn-secondary">Nuevo Servicio</a>
+    </div>
+
+    <div class="card">
+        <h3>🏢 Centros</h3>
+        <p>Gestiona los diferentes centros de trabajo y sus ubicaciones.</p>
+        <a href="{{ url_for('centros') }}" class="btn">Ver Centros</a>
+        <a href="{{ url_for('nuevo_centro') }}" class="btn btn-secondary">Nuevo Centro</a>
+    </div>
+
+    <div class="card">
+        <h3>⭐ Fidelidad</h3>
+        <p>Programa de puntos de fidelidad. 1 punto por cada 10€ gastados.</p>
+        <a href="{{ url_for('fidelidad') }}" class="btn">Ver Tarjetas</a>
+    </div>
+
+    <div class="card">
+        <h3>📊 Reportes</h3>
+        <p>Análisis de ventas por centro, clientes, servicios y puntos de fidelidad.</p>
+        <a href="{{ url_for('reportes') }}" class="btn">Ver Reportes</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>ℹ️ Información del Sistema</h3>
+    <ul>
+        <li><strong>IVA configurado:</strong> 21%</li>
+        <li><strong>Puntos de fidelidad:</strong> 1 punto por cada 10€</li>
+        <li><strong>Sincronización:</strong> Google People API</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function syncGoogleContacts() {
+    if (!confirm('¿Deseas sincronizar los contactos desde Google? Esto puede tardar unos momentos.')) {
+        return;
+    }
+    
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = 'Sincronizando...';
+    
+    try {
+        const response = await fetch('/api/clientes/sync', {
+            method: 'POST'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(`Sincronización exitosa!\nNuevos: ${data.nuevos}\nActualizados: ${data.actualizados}`);
+            window.location.href = '/clientes';
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error al sincronizar: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sincronizar Google';
+    }
+}
+</script>
+{% endblock %}

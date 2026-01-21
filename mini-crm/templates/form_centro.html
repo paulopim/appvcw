@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Centro - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>➕ Nuevo Centro</h2>
+    
+    <form method="POST" action="{{ url_for('nuevo_centro') }}">
+        <div class="form-group">
+            <label for="nombre_centro">Nombre del Centro *</label>
+            <input type="text" name="nombre_centro" id="nombre_centro" required>
+        </div>
+
+        <div class="form-group">
+            <label for="localidad">Localidad *</label>
+            <input type="text" name="localidad" id="localidad" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn">✅ Guardar Centro</button>
+            <a href="{{ url_for('centros') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Clientes - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>👥 Clientes</h2>
+    <button onclick="syncGoogleContacts()" class="btn">🔄 Sincronizar con Google</button>
+</div>
+
+{% if clientes %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Cumpleaños</th>
+            <th>Dirección</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.telefono or '-' }}</td>
+            <td>{{ cliente.email or '-' }}</td>
+            <td>{{ cliente.cumple or '-' }}</td>
+            <td>{{ cliente.direccion or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay clientes registrados. Sincroniza con Google Contacts para importarlos.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function syncGoogleContacts() {
+    if (!confirm('¿Deseas sincronizar los contactos desde Google? Esto puede tardar unos momentos.')) {
+        return;
+    }
+    
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = 'Sincronizando...';
+    
+    try {
+        const response = await fetch('/api/clientes/sync', {
+            method: 'POST'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(`Sincronización exitosa!\nNuevos: ${data.nuevos}\nActualizados: ${data.actualizados}`);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error al sincronizar: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🔄 Sincronizar con Google';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte: Ventas por Cliente{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Ventas por Cliente</h2>
+    <a href="{{ url_for('reportes') }}" class="btn btn-secondary">← Volver a Reportes</a>
+</div>
+
+{% if reporte %}
+<table>
+    <thead>
+        <tr>
+            <th>Ranking</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Total Ventas</th>
+            <th>Total Pagado</th>
+            <th>Puntos Fidelidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in reporte %}
+        <tr>
+            <td>
+                {% if loop.index == 1 %}🥇
+                {% elif loop.index == 2 %}🥈
+                {% elif loop.index == 3 %}🥉
+                {% else %}{{ loop.index }}
+                {% endif %}
+            </td>
+            <td>{{ row.nombre }}</td>
+            <td>{{ row.telefono or '-' }}</td>
+            <td>{{ row.email or '-' }}</td>
+            <td>{{ row.total_ventas or 0 }}</td>
+            <td><strong>{{ "%.2f"|format(row.total_pagado or 0) }} €</strong></td>
+            <td>{{ "%.1f"|format(row.puntos_fidelidad or 0) }} pts</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay datos disponibles.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Ventas - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>💰 Ventas</h2>
+    <a href="{{ url_for('nueva_venta') }}" class="btn">➕ Nueva Venta</a>
+</div>
+
+{% if ventas %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Centro</th>
+            <th>Cliente</th>
+            <th>Total Pagado</th>
+            <th>Puntos</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venta in ventas %}
+        <tr>
+            <td>#{{ "%06d"|format(venta.id) }}</td>
+            <td>{{ venta.fecha[:19] }}</td>
+            <td>{{ venta.nombre_centro }}</td>
+            <td>{{ venta.nombre_cliente }}</td>
+            <td>{{ "%.2f"|format(venta.total_pagado) }} €</td>
+            <td>{{ "%.1f"|format(venta.puntos_fidelidad) }}</td>
+            <td>
+                <a href="{{ url_for('factura', id=venta.id) }}" class="btn btn-small">Ver Factura</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay ventas registradas aún.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Servicio - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>➕ Nuevo Servicio</h2>
+    
+    <form method="POST" action="{{ url_for('nuevo_servicio') }}">
+        <div class="form-group">
+            <label for="servicio">Nombre del Servicio *</label>
+            <input type="text" name="servicio" id="servicio" required>
+        </div>
+
+        <div class="form-group">
+            <label for="precio_sin_iva">Precio sin IVA (€) *</label>
+            <input type="number" name="precio_sin_iva" id="precio_sin_iva" 
+                   step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn">✅ Guardar Servicio</button>
+            <a href="{{ url_for('servicios') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

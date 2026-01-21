@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Factura #{{ "%06d"|format(data.venta.id) }} - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="factura">
+    <div class="factura-header">
+        <h1>FACTURA</h1>
+        <p>Factura Nº: <strong>#{{ "%06d"|format(data.venta.id) }}</strong></p>
+        <p>Fecha: {{ data.venta.fecha[:19] }}</p>
+    </div>
+
+    <div class="factura-info">
+        <div class="factura-section">
+            <h3>🏢 Centro</h3>
+            <p><strong>{{ data.venta.nombre_centro }}</strong></p>
+            <p>{{ data.venta.localidad }}</p>
+        </div>
+
+        <div class="factura-section">
+            <h3>👤 Cliente</h3>
+            <p><strong>{{ data.venta.nombre_cliente }}</strong></p>
+            {% if data.venta.telefono_cliente %}
+            <p>Tel: {{ data.venta.telefono_cliente }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="factura-servicios">
+        <h3>🔧 Servicios Contratados</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th style="text-align: right;">Precio (sin IVA)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for servicio in data.servicios %}
+                <tr>
+                    <td>{{ servicio.servicio }}</td>
+                    <td style="text-align: right;">{{ "%.2f"|format(servicio.precio_sin_iva) }} €</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="factura-totales">
+        <table>
+            <tr>
+                <td><strong>Subtotal (sin IVA):</strong></td>
+                <td style="text-align: right;">{{ "%.2f"|format(data.venta.total_sin_iva) }} €</td>
+            </tr>
+            <tr>
+                <td><strong>IVA ({{ iva_rate }}%):</strong></td>
+                <td style="text-align: right;">{{ "%.2f"|format(data.venta.total_con_iva - data.venta.total_sin_iva) }} €</td>
+            </tr>
+            <tr>
+                <td><strong>TOTAL:</strong></td>
+                <td style="text-align: right;">{{ "%.2f"|format(data.venta.total_con_iva) }} €</td>
+            </tr>
+            <tr style="background-color: var(--primary-color); color: white;">
+                <td><strong>TOTAL PAGADO:</strong></td>
+                <td style="text-align: right;"><strong>{{ "%.2f"|format(data.venta.total_pagado) }} €</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="factura-fidelidad">
+        <h3>⭐ Programa de Fidelidad</h3>
+        <p>Puntos ganados en esta compra:</p>
+        <div class="puntos">{{ "%.1f"|format(data.venta.puntos_fidelidad) }}</div>
+        <p style="margin-top: 15px;">Puntos totales acumulados:</p>
+        <div class="puntos">{{ "%.1f"|format(data.puntos_totales) }}</div>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-light);">
+            ¡Sigue acumulando puntos! 1 punto por cada 10€ gastados.
+        </p>
+    </div>
+
+    <div class="factura-acciones">
+        <button onclick="window.print()" class="btn">🖨️ Imprimir Factura</button>
+        <a href="{{ url_for('factura_pdf', id=data.venta.id) }}" class="btn btn-secondary" target="_blank">
+            📄 Descargar PDF
+        </a>
+        <a href="{{ url_for('ventas') }}" class="btn btn-secondary">← Volver a Ventas</a>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+        <p style="color: var(--text-light); font-size: 0.9rem;">
+            Gracias por confiar en VIP Car Wash<br>
+            Mini CRM - Sistema de Gestión
+        </p>
+    </div>
+</div>
+{% endblock %}

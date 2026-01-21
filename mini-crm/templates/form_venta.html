@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Venta - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📝 Nueva Venta</h2>
+    
+    <form method="POST" action="{{ url_for('nueva_venta') }}" id="formVenta">
+        <div class="form-group">
+            <label for="id_centro">Centro *</label>
+            <select name="id_centro" id="id_centro" required onchange="updateCentroName()">
+                <option value="">Seleccione un centro</option>
+                {% for centro in centros %}
+                <option value="{{ centro.id }}" data-nombre="{{ centro.nombre_centro }}">
+                    {{ centro.nombre_centro }} - {{ centro.localidad }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="id_cliente">Cliente *</label>
+            <select name="id_cliente" id="id_cliente" required onchange="updateClienteInfo()">
+                <option value="">Seleccione un cliente</option>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}" 
+                        data-nombre="{{ cliente.nombre }}" 
+                        data-telefono="{{ cliente.telefono }}">
+                    {{ cliente.nombre }}{% if cliente.telefono %} - {{ cliente.telefono }}{% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre_cliente">Nombre del Cliente (rellenado automático)</label>
+            <input type="text" id="nombre_cliente" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="telefono_cliente">Teléfono del Cliente (rellenado automático)</label>
+            <input type="text" id="telefono_cliente" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Servicios * (seleccionar múltiples)</label>
+            <div class="checkbox-group" id="servicios-container">
+                {% for servicio in servicios %}
+                <div class="checkbox-item">
+                    <input type="checkbox" 
+                           name="servicios" 
+                           id="servicio_{{ servicio.id }}" 
+                           value="{{ servicio.id }}"
+                           data-precio="{{ servicio.precio_sin_iva }}"
+                           onchange="calcularTotales()">
+                    <label for="servicio_{{ servicio.id }}">
+                        {{ servicio.servicio }} - {{ "%.2f"|format(servicio.precio_sin_iva) }} €
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card" style="background-color: #f9f9f9;">
+            <h3>💰 Resumen de la Venta</h3>
+            
+            <p><strong>Total sin IVA:</strong> <span id="total_sin_iva">0.00</span> €</p>
+            <p><strong>IVA ({{ iva_rate }}%):</strong> <span id="iva_amount">0.00</span> €</p>
+            <p><strong>Total con IVA:</strong> <span id="total_con_iva">0.00</span> €</p>
+            
+            <div class="form-group">
+                <label>
+                    <input type="radio" name="total_con_iva" value="true" checked onchange="calcularTotales()">
+                    Cobrar Total con IVA
+                </label>
+                <label>
+                    <input type="radio" name="total_con_iva" value="false" onchange="calcularTotales()">
+                    Cobrar Total sin IVA
+                </label>
+            </div>
+            
+            <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color);">
+                <strong>TOTAL A PAGAR:</strong> <span id="total_pagado">0.00</span> €
+            </p>
+            
+            <p style="color: var(--success);">
+                <strong>⭐ Puntos de Fidelidad:</strong> <span id="puntos_fidelidad">0.0</span> puntos
+            </p>
+        </div>
+
+        <div class="form-group mt-20">
+            <button type="submit" class="btn">✅ Registrar Venta y Generar Factura</button>
+            <a href="{{ url_for('ventas') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const IVA_RATE = {{ iva_rate }} / 100;
+const POINTS_PER_EURO = 0.1;
+
+function updateClienteInfo() {
+    const select = document.getElementById('id_cliente');
+    const option = select.options[select.selectedIndex];
+    
+    if (option.value) {
+        document.getElementById('nombre_cliente').value = option.dataset.nombre || '';
+        document.getElementById('telefono_cliente').value = option.dataset.telefono || '';
+    } else {
+        document.getElementById('nombre_cliente').value = '';
+        document.getElementById('telefono_cliente').value = '';
+    }
+}
+
+function updateCentroName() {
+    // Esta función se puede usar para mostrar info adicional del centro si es necesario
+}
+
+function calcularTotales() {
+    const checkboxes = document.querySelectorAll('input[name="servicios"]:checked');
+    let totalSinIva = 0;
+    
+    checkboxes.forEach(cb => {
+        totalSinIva += parseFloat(cb.dataset.precio);
+    });
+    
+    const ivaAmount = totalSinIva * IVA_RATE;
+    const totalConIva = totalSinIva + ivaAmount;
+    
+    const cobrarConIva = document.querySelector('input[name="total_con_iva"]:checked').value === 'true';
+    const totalPagado = cobrarConIva ? totalConIva : totalSinIva;
+    
+    const puntos = totalPagado * POINTS_PER_EURO;
+    
+    document.getElementById('total_sin_iva').textContent = totalSinIva.toFixed(2);
+    document.getElementById('iva_amount').textContent = ivaAmount.toFixed(2);
+    document.getElementById('total_con_iva').textContent = totalConIva.toFixed(2);
+    document.getElementById('total_pagado').textContent = totalPagado.toFixed(2);
+    document.getElementById('puntos_fidelidad').textContent = puntos.toFixed(1);
+}
+
+// Validación del formulario
+document.getElementById('formVenta').addEventListener('submit', function(e) {
+    const servicios = document.querySelectorAll('input[name="servicios"]:checked');
+    
+    if (servicios.length === 0) {
+        e.preventDefault();
+        alert('Por favor, selecciona al menos un servicio.');
+        return false;
+    }
+});
+</script>
+{% endblock %}

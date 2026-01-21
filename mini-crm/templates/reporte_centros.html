@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte: Ventas por Centro{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Ventas por Centro</h2>
+    <a href="{{ url_for('reportes') }}" class="btn btn-secondary">← Volver a Reportes</a>
+</div>
+
+{% if reporte %}
+<table>
+    <thead>
+        <tr>
+            <th>Centro</th>
+            <th>Localidad</th>
+            <th>Total Ventas</th>
+            <th>Total sin IVA</th>
+            <th>Total con IVA</th>
+            <th>Total Pagado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in reporte %}
+        <tr>
+            <td>{{ row.nombre_centro }}</td>
+            <td>{{ row.localidad }}</td>
+            <td>{{ row.total_ventas or 0 }}</td>
+            <td>{{ "%.2f"|format(row.total_sin_iva or 0) }} €</td>
+            <td>{{ "%.2f"|format(row.total_con_iva or 0) }} €</td>
+            <td><strong>{{ "%.2f"|format(row.total_pagado or 0) }} €</strong></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay datos disponibles.</p>
+</div>
+{% endif %}
+{% endblock %}

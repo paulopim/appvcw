@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Centros - Mini CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🏢 Centros</h2>
+    <a href="{{ url_for('nuevo_centro') }}" class="btn">➕ Nuevo Centro</a>
+</div>
+
+{% if centros %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre del Centro</th>
+            <th>Localidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for centro in centros %}
+        <tr>
+            <td>{{ centro.id }}</td>
+            <td>{{ centro.nombre_centro }}</td>
+            <td>{{ centro.localidad }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay centros registrados.</p>
+</div>
+{% endif %}
+{% endblock %}

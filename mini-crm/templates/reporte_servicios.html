@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Reporte: Servicios Más Vendidos{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Servicios Más Vendidos</h2>
+    <a href="{{ url_for('reportes') }}" class="btn btn-secondary">← Volver a Reportes</a>
+</div>
+
+{% if reporte %}
+<table>
+    <thead>
+        <tr>
+            <th>Ranking</th>
+            <th>Servicio</th>
+            <th>Precio (sin IVA)</th>
+            <th>Veces Vendido</th>
+            <th>Total Vendido</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in reporte %}
+        {% if row.veces_vendido > 0 %}
+        <tr>
+            <td>
+                {% if loop.index == 1 %}🥇
+                {% elif loop.index == 2 %}🥈
+                {% elif loop.index == 3 %}🥉
+                {% else %}{{ loop.index }}
+                {% endif %}
+            </td>
+            <td>{{ row.servicio }}</td>
+            <td>{{ "%.2f"|format(row.precio_sin_iva) }} €</td>
+            <td><strong>{{ row.veces_vendido }}</strong></td>
+            <td>{{ "%.2f"|format(row.total_vendido or 0) }} €</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No hay datos disponibles.</p>
+</div>
+{% endif %}
+{% endblock %}
