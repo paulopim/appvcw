@@ -366,5 +366,10 @@ def reporte_top_fidelidad():
     reporte = database.get_reporte_top_clientes_fidelidad()
     return render_template('reporte_fidelidad.html', reporte=reporte)
 
+@app.route('/privacidad')
+def privacidad():
+    """Página de política de privacidad"""
+    return render_template('privacidad.html')
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
